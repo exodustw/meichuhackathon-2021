@@ -1,0 +1,31 @@
+extends ../layout-liff
+
+block content
+  #app.py-3(v-cloak)
+    .container.text-monospace
+      h1 getProfile
+      pre #[code {{ JSON.stringify(profile, null, 2) }}]
+
+block script
+  script.
+    window.liffLogin = (async () => {
+      await liff.init({ liffId: '#{liffid}' })
+      if (!liff.isLoggedIn()) {
+        liff.login({ redirectUri: location.href })
+        await new Promise(resolve => {}) // 永遠不會結束的 Promise
+      }
+    })()
+    window.vm = new Vue({
+      el: '#app',
+      data: {
+        profile: null,
+      },
+      async mounted () {
+        try {
+          await window.liffLogin
+          this.profile = await liff.getProfile()
+        } catch (err) {
+          console.log(err)
+        }
+      },
+    })

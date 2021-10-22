@@ -1,0 +1,7 @@
+if NODE_ENV !== 'production'
+  script(crossorigin="anonymous", src="https://cdn.jsdelivr.net/npm/vconsole@3/dist/vconsole.min.js")
+  script.
+    window.vConsole = new VConsole({
+      // vconsole 會去把 fetch 這個函式 mock，然後這個 mock 版本的 fetch 在某些瀏覽器上不支援 LIFF SDK 的用法，於是就會造成無法使用 liff.getProfile() 的狀況，解決辦法是，先暫時把 vconsole 的 network 模組拔掉。
+      defaultPlugins: ['system', 'element', 'storage'],
+    })

@@ -1,0 +1,53 @@
+extends layout-vue
+
+block style
+  style.
+    .badge {vertical-align: text-top}
+
+block content
+  #app.py-3(v-cloak)
+    .container.text-monospace
+      h1 伺服器啟動成功
+      hr
+      h2 Messaging API 設定
+      ol
+        li.mt-1 請把 #[code.mx-1 Webhook URL] 設定為 #[span.badge.badge-dark(@click="btnCopy(webhook)") {{ webhook }}]
+        li.mt-1 請把 #[span.badge.badge-primary(@click="btnCopy('LINEOA_ACCESS_TOKEN')") LINEOA_ACCESS_TOKEN] 設定為 #[code.mx-1 Channel access token (long-lived)]
+        li.mt-1 請把 #[span.badge.badge-primary(@click="btnCopy('LINEOA_SECRET')") LINEOA_SECRET] 設定為 #[code.mx-1 Channel secret]
+      hr
+      h2 LIFF 設定
+      ol
+        li.mt-1 新增一個 Full 大小的 LIFF，#[code Endpoint URL] 設定為 #[span.badge.badge-dark(@click="btnCopy(liffFull)") {{ liffFull }}]，然後把 #[span.badge.badge-primary(@click="btnCopy('LIFFID_FULL')") LIFFID_FULL] 設定為剛剛新增的 LIFF ID
+        li.mt-1 新增一個 Tall 大小的 LIFF，#[code Endpoint URL] 設定為 #[span.badge.badge-dark(@click="btnCopy(liffTall)") {{ liffTall }}]，然後把 #[span.badge.badge-primary(@click="btnCopy('LIFFID_TALL')") LIFFID_TALL] 設定為剛剛新增的 LIFF ID
+        li.mt-1 新增一個 Compact 大小的 LIFF，#[code Endpoint URL] 設定為 #[span.badge.badge-dark(@click="btnCopy(liffCompact)") {{ liffCompact }}]，然後把 #[span.badge.badge-primary(@click="btnCopy('LIFFID_COMPACT')") LIFFID_COMPACT] 設定為剛剛新增的 LIFF ID
+
+block script
+  script.
+    window.vm = new Vue({
+      el: '#app',
+      data: {
+        liffCompact: '',
+        liffFull: '',
+        liffTall: '',
+        webhook: '',
+      },
+      async mounted () {
+        this.liffCompact = new URL('/liff/compact/', location).href
+        this.liffFull = new URL('/liff/full/', location).href
+        this.liffTall = new URL('/liff/tall/', location).href
+        this.webhook = new URL('/webhook', location).href
+      },
+      methods: {
+        async btnCopy (text, container = null) {
+          if (!container) container = document.body
+          const dom = document.createElement('textarea')
+          dom.value = text
+          container.appendChild(dom)
+          dom.select()
+          dom.setSelectionRange(0, 1e6) // For mobile devices
+          document.execCommand('copy')
+          container.removeChild(dom)
+          await Swal.fire({ icon: 'success', title: '已複製到剪貼簿' })
+        },
+      },
+    })
