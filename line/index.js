@@ -8,9 +8,11 @@ const router = express.Router();
 // 每個 event 的處理順序
 const eventHandler = middlewareCompose([
   require("./event-init"),
+  require("./command"),
   require("./liff-url"),
+  require("./follow"),
   require("./echo-text"),
-  require("./follow")
+  require("./exception")
 ]);
 
 if (middleware) {
