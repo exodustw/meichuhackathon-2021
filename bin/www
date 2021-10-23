@@ -6,7 +6,7 @@
 
 const app = require('../app')
 const debug = require('../libs/debug')(__filename)
-const http = require('http')
+const https = require('https')
 
 /**
  * Get port from environment and store in Express.
@@ -18,8 +18,13 @@ app.set('port', port)
 /**
  * Create HTTP server.
  */
+ //const server = http.createServer(app)
+ var fs = require('fs')
+ var privateKey  = fs.readFileSync('/etc/letsencrypt/live/home.exodus.tw/privkey.pem')
+ var certificate = fs.readFileSync('/etc/letsencrypt/live/home.exodus.tw/fullchain.pem')
+ var credentials = { key: privateKey, cert: certificate}
 
-const server = http.createServer(app)
+ const server = https.createServer(credentials, app)
 
 /**
  * Listen on provided port, on all network interfaces.
