@@ -1,0 +1,155 @@
+extends ../layout-liff
+
+
+block content
+
+    doctype html
+    meta(charset='utf-8')
+
+
+    // Load d3.js
+    script(src='https://d3js.org/d3.v4.js')
+    // Load d3-cloud
+    script(src='https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js')
+    // Create a div where the graph will take place
+    #my_dataviz
+
+    #container
+    style(type='text/css').
+        #container { margin: 0 auto; width: 80%; height: 80% }
+        .click-only-text {
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        }
+        .click-only-text::selection {
+        background: none;
+        }
+        .word-default {
+        fill: cadetblue;
+        font-weight: normal;
+        }
+        .word-hovered {
+        fill: teal;
+        font-weight: bold;
+        }
+        .word-selected {
+        fill: darkslategrey;
+        font-weight: bold;
+        }
+    script.
+        // List of words
+        var myWords = [{word: "冰箱", size: "10", url: "https://m.facebook.com/groups/817620721658179/permalink/4497589060327975/?m_entstream_source=group&refid=18&_ft_=qid.-7546494620022000748%3Amf_story_key.4497589060327975%3Atop_level_post_id.4497589060327975%3Atl_objid.4497589060327975%3Acontent_owner_id_new.100006517068099%3Apage_id.817620721658179%3Asrc.22%3Astory_location.6%3Astory_attachment_style.photo%3Afilter.GroupStoriesByActivityEntQuery%3Aott.AX_3LYRg_56OyyPP%3Atds_flgs.3&__tn__=-R"},
+        {word: "耳機", size: "50", url: "https://m.facebook.com/groups/817620721658179/permalink/4507619405991607/?m_entstream_source=group&refid=18&_ft_=qid.-7546492696007054763%3Amf_story_key.4507619405991607%3Atop_level_post_id.4507619405991607%3Atl_objid.4507619405991607%3Acontent_owner_id_new.100002838825336%3Apage_id.817620721658179%3Asrc.22%3Aphoto_attachments_list.%5B4028197407284847%2C4028198097284778%2C4028198310618090%2C4028198460618075%2C4028197943951460%5D%3Astory_location.6%3Astory_attachment_style.album%3Afilter.GroupStoriesByActivityEntQuery%3Aott.AX_6ldvMk7YhYQq1%3Atds_flgs.3&__tn__=-R"},
+        {word: "沙發", size: "30", url: "https://m.facebook.com/groups/817620721658179/permalink/4513654532054761/?m_entstream_source=group&refid=18&_ft_=qid.-7546503622433469546%3Amf_story_key.4513654532054761%3Atop_level_post_id.4513654532054761%3Atl_objid.4513654532054761%3Acontent_owner_id_new.100000352602282%3Apage_id.817620721658179%3Asrc.22%3Aphoto_attachments_list.%5B4848193565202349%2C4848193738535665%5D%3Astory_location.6%3Astory_attachment_style.album%3Afilter.GroupStoriesByActivityEntQuery%3Aott.AX9mQnRZLMFk_anu%3Atds_flgs.3%3Apage_insights.%7B%22817620721658179%22%3A%7B%22page_id%22%3A817620721658179%2C%22page_id_type%22%3A%22group%22%2C%22actor_id%22%3A100000352602282%2C%22dm%22%3A%7B%22isShare%22%3A0%2C%22originalPostOwnerID%22%3A0%7D%2C%22psn%22%3A%22EntGroupMallPostCreationStory%22%2C%22post_context%22%3A%7B%22object_fbtype%22%3A657%2C%22publish_time%22%3A1635003427%2C%22story_name%22%3A%22EntGroupMallPostCreationStory%22%2C%22story_fbid%22%3A%5B4513654532054761%5D%7D%2C%22role%22%3A1%2C%22sl%22%3A6%7D%7D&__tn__=-R"},
+        {word: "團報", size: "20", url: "https://m.facebook.com/groups/817620721658179/permalink/4512009552219259/?m_entstream_source=group&refid=18&_ft_=qid.-7546503622401543537%3Amf_story_key.4512009552219259%3Atop_level_post_id.4512009552219259%3Atl_objid.4512009552219259%3Acontent_owner_id_new.100002993259717%3Apage_id.817620721658179%3Asrc.22%3Aphoto_attachments_list.%5B440961744129919%2C4163843703725364%2C4163843753725359%5D%3Astory_location.6%3Astory_attachment_style.album%3Afilter.GroupStoriesByActivityEntQuery%3Aott.AX-inaxXvZLPlkux%3Atds_flgs.3%3Apage_insights.%7B%22817620721658179%22%3A%7B%22page_id%22%3A817620721658179%2C%22page_id_type%22%3A%22group%22%2C%22actor_id%22%3A100002993259717%2C%22dm%22%3A%7B%22isShare%22%3A0%2C%22originalPostOwnerID%22%3A0%7D%2C%22psn%22%3A%22EntGroupMallPostCreationStory%22%2C%22post_context%22%3A%7B%22object_fbtype%22%3A657%2C%22publish_time%22%3A1634961279%2C%22story_name%22%3A%22EntGroupMallPostCreationStory%22%2C%22story_fbid%22%3A%5B4512009552219259%5D%7D%2C%22role%22%3A1%2C%22sl%22%3A6%7D%7D&__tn__=-R"},
+        {word: "食物", size: "60", url: "https://m.facebook.com/groups/817620721658179/permalink/4513560802064134/?m_entstream_source=group&refid=18&_ft_=qid.-7546500048852361194%"},
+        {word: "合購", size: "30", url: "https://m.facebook.com/groups/817620721658179/permalink/4514074245346123/?m_entstream_source=group&refid=18&_ft_=qid.-7546503622406752265%3Amf_story_key.4514074245346123%3Atop_level_post_id.4514074245346123%3Atl_objid.4514074245346123%3Acontent_owner_id_new.808069586%3Apage_id.817620721658179%3Asrc.22%3Astory_location.6%3Astory_attachment_style.photo%3Afilter.GroupStoriesByActivityEntQuery%3Aott.AX8s1MfnogvaQgq-%3Atds_flgs.3%3Apage_insights.%7B%22817620721658179%22%3A%7B%22page_id%22%3A817620721658179%2C%22page_id_type%22%3A%22group%22%2C%22actor_id%22%3A808069586%2C%22dm%22%3A%7B%22isShare%22%3A0%2C%22originalPostOwnerID%22%3A0%7D%2C%22psn%22%3A%22EntGroupMallPostCreationStory%22%2C%22post_context%22%3A%7B%22object_fbtype%22%3A657%2C%22publish_time%22%3A1635013610%2C%22story_name%22%3A%22EntGroupMallPostCreationStory%22%2C%22story_fbid%22%3A%5B4514074245346123%5D%7D%2C%22role%22%3A1%2C%22sl%22%3A6%7D%7D&__tn__=-R"},
+        {word: "出清", size: "40", url: "https://m.facebook.com/groups/817620721658179/permalink/4507367869350094/?m_entstream_source=group&refid=18&_ft_=qid.-7546492695921976119%3Amf_story_key.4507367869350094%3Atop_level_post_id.4507367869350094%3Atl_objid.4507367869350094%3Acontent_owner_id_new.100009843161673%3Apage_id.817620721658179%3Asrc.22%3Aphoto_attachments_list.%5B1561790960825661%2C1561791007492323%5D%3Astory_location.6%3Astory_attachment_style.album%3Afilter.GroupStoriesByActivityEntQuery%3Aott.AX8lypeVrHFBNFOQ%3Atds_flgs.3&__tn__=-R"},
+        {word: "Switch", size: "30", url: "https://m.facebook.com/groups/817620721658179/permalink/4510401345713413/?m_entstream_source=group&refid=18&_ft_=qid.-7546494619943888111%"},
+        {word: "螢幕", size: "50", url: "https://m.facebook.com/groups/817620721658179/permalink/4512912585462289/?m_entstream_source=group&refid=18&_ft_=qid.-7546496406882984234%"},
+        {word: "代購", size: "30", url: "https://m.facebook.com/groups/817620721658179/permalink/4514039338682947/?m_entstream_source=group&refid=18&_ft_=qid.-7546503622403053280%3Amf_story_key.4514039338682947%3Atop_level_post_id.4514039338682947%3Atl_objid.4514039338682947%3Acontent_owner_id_new.100002487452717%3Apage_id.817620721658179%3Asrc.22%3Aphoto_attachments_list.%5B4487247294701475%2C4487247318034806%5D%3Astory_location.6%3Astory_attachment_style.album%3Afilter.GroupStoriesByActivityEntQuery%3Aott.AX8TCz587HoKu5eR%3Atds_flgs.3%3Apage_insights.%7B%22817620721658179%22%3A%7B%22page_id%22%3A817620721658179%2C%22page_id_type%22%3A%22group%22%2C%22actor_id%22%3A100002487452717%2C%22dm%22%3A%7B%22isShare%22%3A0%2C%22originalPostOwnerID%22%3A0%7D%2C%22psn%22%3A%22EntGroupMallPostCreationStory%22%2C%22post_context%22%3A%7B%22object_fbtype%22%3A657%2C%22publish_time%22%3A1635012677%2C%22story_name%22%3A%22EntGroupMallPostCreationStory%22%2C%22story_fbid%22%3A%5B4514039338682947%5D%7D%2C%22role%22%3A1%2C%22sl%22%3A6%7D%7D&__tn__=-R"},
+        {word: "AirPods", size: "40", url: "https://m.facebook.com/groups/817620721658179/permalink/4510316242388590/?m_entstream_source=group&refid=18&_ft_=qid.-7546500048938310287%"},
+        {word: "Apple Pencil", size: "30", url: "https://m.facebook.com/groups/817620721658179/permalink/4513850525368495/?m_entstream_source=group&refid=18&_ft_=qid.-7546503622237799390%3Amf_story_key.4513850525368495%3Atop_level_post_id.4513850525368495%3Atl_objid.4513850525368495%3Acontent_owner_id_new.100000142612380%3Apage_id.817620721658179%3Asrc.22%3Aphoto_attachments_list.%5B5140257422655627%2C5140257459322290%2C5140257569322279%5D%3Astory_location.6%3Astory_attachment_style.album%3Afilter.GroupStoriesByActivityEntQuery%3Aott.AX_-WcjVrYCpYIS3%3Atds_flgs.3%3Apage_insights.%7B%22817620721658179%22%3A%7B%22page_id%22%3A817620721658179%2C%22page_id_type%22%3A%22group%22%2C%22actor_id%22%3A100000142612380%2C%22dm%22%3A%7B%22isShare%22%3A0%2C%22originalPostOwnerID%22%3A0%7D%2C%22psn%22%3A%22EntGroupMallPostCreationStory%22%2C%22post_context%22%3A%7B%22object_fbtype%22%3A657%2C%22publish_time%22%3A1635007981%2C%22story_name%22%3A%22EntGroupMallPostCreationStory%22%2C%22story_fbid%22%3A%5B4513850525368495%5D%7D%2C%22role%22%3A1%2C%22sl%22%3A6%7D%7D&__tn__=-R"},
+        {word: "出售", size: "20", url: "https://m.facebook.com/groups/817620721658179/permalink/4511784462241768/?m_entstream_source=group&refid=18&_ft_=qid.-7546503622296971260%3Amf_story_key.4511784462241768%3Atop_level_post_id.4511784462241768%3Atl_objid.4511784462241768%3Acontent_owner_id_new.100003164868768%3Apage_id.817620721658179%3Asrc.22%3Astory_location.6%3Astory_attachment_style.photo%3Afilter.GroupStoriesByActivityEntQuery%3Aott.AX_yCqDtv_645sq4%3Atds_flgs.3%3Apage_insights.%7B%22817620721658179%22%3A%7B%22page_id%22%3A817620721658179%2C%22page_id_type%22%3A%22group%22%2C%22actor_id%22%3A100003164868768%2C%22dm%22%3A%7B%22isShare%22%3A0%2C%22originalPostOwnerID%22%3A0%7D%2C%22psn%22%3A%22EntGroupMallPostCreationStory%22%2C%22post_context%22%3A%7B%22object_fbtype%22%3A657%2C%22publish_time%22%3A1634954692%2C%22story_name%22%3A%22EntGroupMallPostCreationStory%22%2C%22story_fbid%22%3A%5B4511784462241768%5D%7D%2C%22role%22%3A1%2C%22sl%22%3A6%7D%7D&__tn__=-R"},
+        {word: "顯卡", size: "20", url: "https://m.facebook.com/groups/817620721658179/permalink/4513863392033875/?m_entstream_source=group&refid=18&_ft_=qid.-7546501835567375457%3Amf_story_key.4513863392033875%3Atop_level_post_id.4513863392033875%3Atl_objid.4513863392033875%3Acontent_owner_id_new.100002293026298%3Apage_id.817620721658179%3Asrc.22%3Astory_location.6%3Astory_attachment_style.photo%3Afilter.GroupStoriesByActivityEntQuery%3Aott.AX-54bS0TcV9E84j%3Atds_flgs.3%3Apage_insights.%7B%22817620721658179%22%3A%7B%22page_id%22%3A817620721658179%2C%22page_id_type%22%3A%22group%22%2C%22actor_id%22%3A100002293026298%2C%22dm%22%3A%7B%22isShare%22%3A0%2C%22originalPostOwnerID%22%3A0%7D%2C%22psn%22%3A%22EntGroupMallPostCreationStory%22%2C%22post_context%22%3A%7B%22object_fbtype%22%3A657%2C%22publish_time%22%3A1635008308%2C%22story_name%22%3A%22EntGroupMallPostCreationStory%22%2C%22story_fbid%22%3A%5B4513863392033875%5D%7D%2C%22role%22%3A1%2C%22sl%22%3A6%7D%7D&__tn__=-R"},
+        {word: "家教", size: "40", url: "https://m.facebook.com/groups/817620721658179/permalink/4507173616036186/?m_entstream_source=group&refid=18&_ft_=qid.-7546503622238026593%3Amf_story_key.4507173616036186%3Atop_level_post_id.4507173616036186%3Atl_objid.4507173616036186%3Acontent_owner_id_new.100000930262157%3Apage_id.817620721658179%3Asrc.22%3Astory_location.6%3Afilter.GroupStoriesByActivityEntQuery%3Aott.AX8k1TKK_zayAz0X%3Atds_flgs.3%3Apage_insights.%7B%22817620721658179%22%3A%7B%22page_id%22%3A817620721658179%2C%22page_id_type%22%3A%22group%22%2C%22actor_id%22%3A100000930262157%2C%22dm%22%3A%7B%22isShare%22%3A0%2C%22originalPostOwnerID%22%3A0%7D%2C%22psn%22%3A%22EntGroupMallPostCreationStory%22%2C%22post_context%22%3A%7B%22object_fbtype%22%3A657%2C%22publish_time%22%3A1634828547%2C%22story_name%22%3A%22EntGroupMallPostCreationStory%22%2C%22story_fbid%22%3A%5B4507173616036186%5D%7D%2C%22role%22%3A1%2C%22sl%22%3A6%7D%7D&__tn__=-R"},
+        {word: "五倍卷", size: "30", url: "https://m.facebook.com/groups/817620721658179/permalink/4512307028856178/?m_entstream_source=group&refid=18&_ft_=qid.-7546503622419243109%3Amf_story_key.4512307028856178%3Atop_level_post_id.4512307028856178%3Atl_objid.4512307028856178%3Acontent_owner_id_new.100004059797236%3Apage_id.817620721658179%3Asrc.22%3Aphoto_attachments_list.%5B2611232245688743%2C2611235975688370%2C2611236132355021%5D%3Astory_location.6%3Astory_attachment_style.album%3Afilter.GroupStoriesByActivityEntQuery%3Aott.AX9JFHvK6TPwfsCn%3Atds_flgs.3%3Apage_insights.%7B%22817620721658179%22%3A%7B%22page_id%22%3A817620721658179%2C%22page_id_type%22%3A%22group%22%2C%22actor_id%22%3A100004059797236%2C%22dm%22%3A%7B%22isShare%22%3A0%2C%22originalPostOwnerID%22%3A0%7D%2C%22psn%22%3A%22EntGroupMallPostCreationStory%22%2C%22post_context%22%3A%7B%22object_fbtype%22%3A657%2C%22publish_time%22%3A1634970851%2C%22story_name%22%3A%22EntGroupMallPostCreationStory%22%2C%22story_fbid%22%3A%5B4512307028856178%5D%7D%2C%22role%22%3A1%2C%22sl%22%3A6%7D%7D&__tn__=-R"},
+        {word: "手機", size: "50", url: "https://m.facebook.com/groups/817620721658179/permalink/4513154235438124/?m_entstream_source=group&refid=18&_ft_=qid.-7546501835706854315%"},
+        {word: "滑鼠", size: "40", url: "https://m.facebook.com/groups/817620721658179/permalink/4497855896967958/?m_entstream_source=group&refid=18&_ft_=qid.-7546500048888013555%"}
+        ]
+        //var myWords='<?php echo $rs;?>';
+        // set the dimensions and margins of the graph
+        var margin = {top: 10, right: 20, bottom: 10, left: 20},
+        width = window.innerWidth - margin.left - margin.right,
+        height = window.innerHeight - margin.top - margin.bottom;
+        const fontFamily = "Verdana, Arial, Helvetica, sans-serif";
+        // append the svg object to the body of the page
+        var svg = d3.select("#my_dataviz").append("svg")
+        .attr("viewBox", [0, 0, window.innerWidth, window.innerHeight])
+        .attr("font-family", fontFamily)
+        .attr("text-anchor", "middle")
+        .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+        var displaySelection = svg.append("text")
+        .attr("font-family", "Lucida Console, Courier, monospace")
+        .attr("text-anchor", "start")
+        .attr("alignment-baseline", "hanging")
+        .attr("x", 10)
+        .attr("y", 10);
+        // Constructs a new cloud layout instance. It run an algorithm to find the position of words that suits your requirements
+        // Wordcloud features that are different from one word to the other must be here
+        var layout = d3.layout.cloud()
+        .size([width, height])
+        //.words(newData)
+        .words(myWords.map(function(d) { return {text: d.word, size:d.size, url: d.url}; }))
+        .padding(3)        //space between words
+        .rotate(() => 0)       // rotation angle in degrees
+        .font(fontFamily)
+        .fontSize(function(d) { return d.size; })      // font size of words
+        //.fontSize(function (d) {
+        //return fontSizeScale(d.size/maxSize);
+        //return fontSizeScale(d.size);
+        //})
+        .on("word", ({size, x, y, rotate, text, url}) => {
+        svg.append("text")
+        .attr("font-size", size)
+        .attr("transform", `translate(${x},${y}) rotate(${rotate})`)
+        .text(text)
+        .classed("click-only-text", true)
+        .classed("word-default", true)
+        .on("mouseover", handleMouseOver)
+        .on("mouseout", handleMouseOut)
+        .on("click", handleClick)
+        //.on('click', function(event, d) {
+        //var e = d3.select(this);
+        //window.open(d.url, '_blank');
+        //});
+        function handleMouseOver(d, i) {
+        d3.select(this)
+        .classed("word-hovered", true)
+        .transition(`mouseover-${text}`).duration(300).ease(d3.easeLinear)
+        .attr("font-size", size + 2)
+        .attr("font-weight", "bold");
+        }
+        function handleMouseOut(d, i) {
+        d3.select(this)
+        .classed("word-hovered", false)
+        .interrupt(`mouseover-${text}`)
+        .attr("font-size", size)
+        .attr("font-weight", "regular");
+        }
+        function handleClick(d, i) {
+        var e = d3.select(this);
+        //displaySelection.text(`selection="${e.text()}"`);
+        e.classed("word-selected", !e.classed("word-selected"));
+        window.open(url);
+        //var url = d.url;
+        //$(location).attr('href', url);
+        //window.location = url;
+        //window.open(d.url, '_blank');
+        //location.href(d.url)
+        //window.location.assign(d.url);
+        }
+        })
+        function formatData(inputData){
+        var array = d3.nest()
+        .key(function(d){return d.word})
+        .key(function(d){return d.size})
+        .entries(myWords)
+        .map(function(d) {
+        var word = d.key
+        var values = d.values.map(function(dd){
+        var size = dd.key
+        return {size:size, url:url}
+        })
+        return {'text':word, 'values':values}})
+        obj = {}
+        array.forEach(function(d){
+        obj[d.word] = d.values
+        })
+        return obj
+        }
+        layout.start();

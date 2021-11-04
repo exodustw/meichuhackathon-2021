@@ -10,6 +10,7 @@ const path = require('path')
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users')
 const liffRouter = require('./routes/liff')
+const trendRouter = require('./routes/trend')
 
 const app = express()
 app.locals.NODE_ENV = getenv('NODE_ENV', 'development')
@@ -27,6 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
+app.use('/trend', trendRouter)
 app.use('/liff', liffRouter)
 
 // catch 404 and forward to error handler

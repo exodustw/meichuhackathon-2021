@@ -11,11 +11,13 @@ const LIFFID = {
 
 router.use('/', async (req, res, next) => {
   try {
+    console.log(req.path)
     const match = req.path.match(/^\/(full|tall|compact)\/([A-Za-z0-9_-]*)$/)
     if (!match) throw createError(404)
 
     const [, size, filename] = match
     res.locals.liffid = LIFFID[size]
+    console.log(filename)
 
     res.render(`liff/${filename || 'index'}`)
   } catch (err) {
