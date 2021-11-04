@@ -1,0 +1,84 @@
+curl -v -X POST https://api.line.me/v2/bot/richmenu \
+-H 'Authorization: Bearer J85sREPg2jERjVElPa8XUu1WTi5OXRLXKh+sxL8N6Ip6W2lKJd3WF4R38KmpyoDY5Ij490Wx7KwvPcAz+J8s2hZENSV7gNDfsQqt6BhitGLDOsaz1jWTBDoDZ6Ti88UAKsB3EesBMEKCNR14bh4GSQdB04t89/1O/w1cDnyilFU=' \
+-H 'Content-Type: application/json' \
+-d \
+'{
+  "size":{
+      "width":2500,
+      "height":1686
+  },
+  "selected": true,
+  "name": "CheeseX5-MsgAPI-Richmenu",
+  "chatBarText": "百寶箱",
+  "areas": [
+      {
+          "bounds": {
+              "x": 1090,
+              "y": 683,
+              "width": 320,
+              "height": 320
+          },
+          "action": {
+              "type":"message",
+              "text":"我的關鍵字"
+          }
+      },
+      {
+          "bounds": {
+              "x": 200,
+              "y": 200,
+              "width": 1000,
+              "height": 593
+          },
+          "action": {
+              "type":"message",
+              "text":"追蹤"
+          }
+      },
+      {
+          "bounds": {
+              "x": 1300,
+              "y": 200,
+              "width": 1000,
+              "height": 593
+          },
+          "action": {
+              "type":"uri",
+              "uri":"https://liff.line.me/1656561747-D65GydQn/trend"
+          }
+      },
+      {
+          "bounds": {
+              "x": 200,
+              "y": 893,
+              "width": 1000,
+              "height": 593
+          },
+          "action": {
+              "type":"message",
+              "text":"退追"
+          }
+      },
+      {
+          "bounds": {
+              "x": 1300,
+              "y": 893,
+              "width": 1000,
+              "height": 593
+          },
+          "action": {
+              "type":"message",
+              "text":"教學"
+          }
+      }
+  ]
+}'
+
+curl -v -X POST https://api-data.line.me/v2/bot/richmenu/richmenu-fd05aec92f39ddb5fb9bdcab49ef1134/content \
+-H 'Authorization: Bearer J85sREPg2jERjVElPa8XUu1WTi5OXRLXKh+sxL8N6Ip6W2lKJd3WF4R38KmpyoDY5Ij490Wx7KwvPcAz+J8s2hZENSV7gNDfsQqt6BhitGLDOsaz1jWTBDoDZ6Ti88UAKsB3EesBMEKCNR14bh4GSQdB04t89/1O/w1cDnyilFU=' \
+-H "Content-Type: image/jpeg" \
+-T images/richai2.jpg
+
+curl -v -X POST https://api.line.me/v2/bot/user/all/richmenu/richmenu-fd05aec92f39ddb5fb9bdcab49ef1134 \
+-H 'Authorization: Bearer J85sREPg2jERjVElPa8XUu1WTi5OXRLXKh+sxL8N6Ip6W2lKJd3WF4R38KmpyoDY5Ij490Wx7KwvPcAz+J8s2hZENSV7gNDfsQqt6BhitGLDOsaz1jWTBDoDZ6Ti88UAKsB3EesBMEKCNR14bh4GSQdB04t89/1O/w1cDnyilFU=' \
+-H 'Content-Length: 0'
