@@ -106,4 +106,4 @@ dist
 #sql
 line/sql.js
 
-resource/*.*
+resources/*.*
